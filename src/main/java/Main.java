@@ -4,17 +4,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-/* ***
- * TO DO:
- * create the students db
- * add functions for
- * getAllStudents(): Retrieves and displays all records from the students table.
- * addStudent(first_name, last_name, email, enrollment_date): Inserts a new student record into the students table.
- * updateStudentEmail(student_id, new_email): Updates the email address for a student with the specified student_id.
- * deleteStudent(student_id): Deletes the record of the student with the specified student_id
- * ***/
 public class Main {
     static void displayMenu(){
+        //Purpose: display menu to allow user to select a CRUD operation or exit program
         System.out.println("Please input your choice : ");
         System.out.println("1. getAllStudents(). Retrieves + displays all students in students relation.");
         System.out.println("2. addStudent(first_name, last_name, email, enrollment_date): Inserts new student into students relation.");
@@ -23,6 +15,10 @@ public class Main {
         System.out.println("0. exit program.");
     }
     static void deleteStudent(Connection connection, int student_id){
+        //Purpose: delete the record of a student at user chosen student_id
+        //Param:
+        // connection (Connection Object) to the postgresql local server using JDBC to manipulate the database content
+        // student_id (integer) of the student whose record we are deleting
         try {
             //here we prepare query string
             String update_str= ("DELETE  FROM students WHERE student_id = ?");
@@ -44,6 +40,11 @@ public class Main {
         System.out.println("### deleteStudent() finished :)");
     }
     static void updateStudentEmail(Connection connection, int student_id, String email){
+        //Purpose: update the email address of a student at user chosen student_id
+        //Param:
+        // connection (Connection Object) to the postgresql local server using JDBC to manipulate the database content
+        // student_id (integer) of the student whose record we are updating
+        // email (String) the new email address we are using to update the student's record
         try {
             //here we prepare query string
             String update_str= ("UPDATE students SET email = ? WHERE student_id = ?");
@@ -66,6 +67,14 @@ public class Main {
         System.out.println("### updateStudentEmail() finished :)");
     }
     static void addStudent(Connection connection, int student_id, String first_name, String last_name, String email, Date enrollment_date){
+        //Purpose: add a new student to the students table
+        //Param:
+        // connection (Connection Object) to the postgresql local server using JDBC to manipulate the database content
+        // student_id (integer) of the student whose record we are deleting
+        // first_name (String) : the first name of the new student we are adding to the students table
+        // last_name (String) : the last name of the new student we are adding to the students table
+        // email (String) : the email address of the new student we are adding to the students table
+        // enrollment_date (Date) : the enrollment date of the new student we are adding to the students table
         try {
             //here we prepare query string
             String update_str= ("INSERT INTO students(student_id, first_name, last_name, email, enrollment_date) VALUES(?,?,?,?,?)");
@@ -97,6 +106,9 @@ public class Main {
     }
 
     static void getAllStudents(Connection connection){
+        //Purpose: display all the students in the students table
+        //Param:
+        // connection (Connection Object) to the postgresql local server using JDBC to retrieve the database content
         try {
             //here we execute a query
             Statement statement = connection.createStatement();
@@ -123,9 +135,12 @@ public class Main {
         System.out.println("### getAllStudents() finished :)");
     }
     public static void main(String[] args) {
+        //Initialise the variables for the jdbc postgresql connection
         String url = "jdbc:postgresql://localhost:5432/COMP3005Assignment1";
         String user = "postgres";
         String password = "anya1234";
+        Connection connection = null;
+        //Initialise the variables for user input and the params for the functions
         int student_id = 7;
         int temp_student_id=0;
         String first_name = "";
@@ -135,8 +150,9 @@ public class Main {
         Date enrollment_date = null;
         DateTimeFormatter formatter; //to format the dates
         Scanner scanner = new Scanner(System.in);
-        Connection connection = null;
+
         int choice = 5;
+        //Connect to the local postgres server
         try{
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(url, user, password);
@@ -147,7 +163,7 @@ public class Main {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
         }
-        //here we add infinite menu
+        //Take user input to run the CRUD functions until user enters 0 to exit program
         while (true){
             displayMenu();
             choice= scanner.nextInt();
@@ -189,6 +205,6 @@ public class Main {
             }
 
         }
-        System.out.printf("Finished outputting DB Content!");
+        System.out.println("Finished outputting DB Content!");
     }
 }
