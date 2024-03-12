@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Main {
+    public static int num_students = 8;
     static void displayMenu(){
         //Purpose: display menu to allow user to select a CRUD operation or exit program
         System.out.println("Please input your choice : ");
@@ -110,6 +111,7 @@ public class Main {
         //Param:
         // connection (Connection Object) to the postgresql local server using JDBC to retrieve the database content
         try {
+            num_students = 0;
             //here we execute a query
             Statement statement = connection.createStatement();
             statement.executeQuery("SELECT  * FROM students");
@@ -124,6 +126,7 @@ public class Main {
                 System.out.print(String.format("%1$-" + 25 + "s", resultSet.getString("email")));
                 System.out.print(String.format("%1$-" + 20 + "s",resultSet.getDate("enrollment_date")));
                 System.out.println();
+                num_students = num_students + 1;
             }
         }
         catch (Exception e){
@@ -141,7 +144,7 @@ public class Main {
         String password = "anya1234";
         Connection connection = null;
         //Initialise the variables for user input and the params for the functions
-        int student_id = 7;
+        int student_id = num_students;
         int temp_student_id=0;
         String first_name = "";
         String last_name = "";
@@ -174,6 +177,7 @@ public class Main {
                 System.out.println("Please find below all students in students relation :");
                 getAllStudents(connection);
             } else if(choice == 2){
+                num_students = num_students + 1;
                 scanner.nextLine(); // Consume the newline character
                 System.out.println("Please input new student's first name to insert :");
                 first_name= scanner.nextLine();
@@ -188,7 +192,7 @@ public class Main {
                 temp = scanner.nextLine();
                 formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 enrollment_date = Date.valueOf(LocalDate.parse(temp,formatter));
-                addStudent(connection,student_id +1, first_name, last_name, email, enrollment_date);
+                addStudent(connection,num_students, first_name, last_name, email, enrollment_date);
             } else if(choice == 3){
                 System.out.println("Please input student_id of student whose email address you are trying to update :");
                 temp_student_id = scanner.nextInt();
