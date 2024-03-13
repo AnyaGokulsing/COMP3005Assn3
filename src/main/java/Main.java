@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Main {
-    public static int num_students = 8;
+
     static void displayMenu(){
         //Purpose: display menu to allow user to select a CRUD operation or exit program
         System.out.println("Please input your choice : ");
@@ -67,7 +67,7 @@ public class Main {
         }
         System.out.println("### updateStudentEmail() finished :)");
     }
-    static void addStudent(Connection connection, int student_id, String first_name, String last_name, String email, Date enrollment_date){
+    static void addStudent(Connection connection, String first_name, String last_name, String email, Date enrollment_date){
         //Purpose: add a new student to the students table
         //Param:
         // connection (Connection Object) to the postgresql local server using JDBC to manipulate the database content
@@ -78,18 +78,16 @@ public class Main {
         // enrollment_date (Date) : the enrollment date of the new student we are adding to the students table
         try {
             //here we prepare query string
-            String update_str= ("INSERT INTO students(student_id, first_name, last_name, email, enrollment_date) VALUES(?,?,?,?,?)");
+            String update_str= ("INSERT INTO students(first_name, last_name, email, enrollment_date) VALUES(?,?,?,?)");
             PreparedStatement preparedStatement = connection.prepareStatement(update_str);
-            preparedStatement.setInt(1,student_id);
-            preparedStatement.setString(2,first_name);
-            preparedStatement.setString(3,last_name);
-            preparedStatement.setString(4,email);
-            preparedStatement.setDate(5,enrollment_date);
+            preparedStatement.setString(1,first_name);
+            preparedStatement.setString(2,last_name);
+            preparedStatement.setString(3,email);
+            preparedStatement.setDate(4,enrollment_date);
             //execute addition
             preparedStatement.executeUpdate();
             //here we format the query values
             System.out.println("Added this record to the students relation :" );
-            System.out.print(String.format("%1$-" + 10 + "s",student_id));
             System.out.print(String.format("%1$-" + 15 + "s", first_name));
             System.out.print(String.format("%1$-" + 20 + "s", last_name));
             System.out.print(String.format("%1$-" + 20 + "s", email));
@@ -111,7 +109,6 @@ public class Main {
         //Param:
         // connection (Connection Object) to the postgresql local server using JDBC to retrieve the database content
         try {
-            num_students = 0;
             //here we execute a query
             Statement statement = connection.createStatement();
             statement.executeQuery("SELECT  * FROM students");
@@ -126,7 +123,6 @@ public class Main {
                 System.out.print(String.format("%1$-" + 25 + "s", resultSet.getString("email")));
                 System.out.print(String.format("%1$-" + 20 + "s",resultSet.getDate("enrollment_date")));
                 System.out.println();
-                num_students = num_students + 1;
             }
         }
         catch (Exception e){
@@ -137,14 +133,15 @@ public class Main {
         }
         System.out.println("### getAllStudents() finished :)");
     }
+
     public static void main(String[] args) {
         //Initialise the variables for the jdbc postgresql connection
         String url = "jdbc:postgresql://localhost:5432/COMP3005Assignment1";
         String user = "postgres";
         String password = "anya1234";
         Connection connection = null;
+        Statement statement = null;
         //Initialise the variables for user input and the params for the functions
-        int student_id = num_students;
         int temp_student_id=0;
         String first_name = "";
         String last_name = "";
@@ -159,6 +156,20 @@ public class Main {
         try{
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(url, user, password);
+            //create students table here
+            statement= connection.createStatement();
+            //DDL to create the students table
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS students (" +
+                    "student_id SERIAL PRIMARY KEY," +
+                    "first_name VARCHAR(50) NOT NULL ," +
+                    "last_name VARCHAR(50) NOT NULL ," +
+                    "email VARCHAR(50) NOT NULL UNIQUE," +
+                    "enrollment_date DATE);");
+            //DML to insert values into the students table
+            statement.executeUpdate("INSERT INTO students (first_name, last_name, email, enrollment_date) VALUES" +
+            "('John', 'Doe', 'john.doe@example.com', '2023-09-01')," +
+            "('Jane', 'Smith', 'jane.smith@example.com', '2023-09-01')," +
+            "('Jim', 'Beam', 'jim.beam@example.com', '2023-09-02');");
         }
         catch (Exception e){
             System.out.println("ERROR");
@@ -177,7 +188,6 @@ public class Main {
                 System.out.println("Please find below all students in students relation :");
                 getAllStudents(connection);
             } else if(choice == 2){
-                num_students = num_students + 1;
                 scanner.nextLine(); // Consume the newline character
                 System.out.println("Please input new student's first name to insert :");
                 first_name= scanner.nextLine();
@@ -192,7 +202,7 @@ public class Main {
                 temp = scanner.nextLine();
                 formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 enrollment_date = Date.valueOf(LocalDate.parse(temp,formatter));
-                addStudent(connection,num_students, first_name, last_name, email, enrollment_date);
+                addStudent(connection, first_name, last_name, email, enrollment_date);
             } else if(choice == 3){
                 System.out.println("Please input student_id of student whose email address you are trying to update :");
                 temp_student_id = scanner.nextInt();
