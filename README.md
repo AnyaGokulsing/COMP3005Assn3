@@ -1,4 +1,11 @@
 COMP 3005 Assignment 3 Question 1 
+Links:
+
+Demo video on Zoom Cloud: [https://carleton-ca.zoom.us/rec/play/Rwy_0x-NxdpNfxVmPYsaGdAqTQ1q4fLyYOhnzYWJt9M8uzCmr0VkIfpiYq7ubP-bXSGfmoI7RvbPAUeK.JUMCILfS9efEuxMH?autoplay=true&startTime=1710791376000]
+
+SQL Statements for set up in studentsDDL.txt [https://github.com/AnyaGokulsing/COMP3005Assn3/blob/master/studentsDDL.txt]
+
+Maven Main java file which connects to Postgres and has the functions' implementations at src/main/java [https://github.com/AnyaGokulsing/COMP3005Assn3/blob/master/src/main/java/Main.java]
 
 Purpose:
 Implement a PostgreSQL database with the students table and write a Java application using JDBC to connect to a local postgresql server (which has the students table in its schema) to perform CRUD (Create, Read, Update, Delete) operations using the following functions:
