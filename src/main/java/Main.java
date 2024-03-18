@@ -157,19 +157,19 @@ public class Main {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(url, user, password);
             //create students table here
-            statement= connection.createStatement();
+//            statement= connection.createStatement();
             //DDL to create the students table
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS students (" +
-                    "student_id SERIAL PRIMARY KEY," +
-                    "first_name VARCHAR(50) NOT NULL ," +
-                    "last_name VARCHAR(50) NOT NULL ," +
-                    "email VARCHAR(50) NOT NULL UNIQUE," +
-                    "enrollment_date DATE);");
+//            statement.executeUpdate("CREATE TABLE IF NOT EXISTS students (" +
+//                    "student_id SERIAL PRIMARY KEY," +
+//                    "first_name VARCHAR(50) NOT NULL ," +
+//                    "last_name VARCHAR(50) NOT NULL ," +
+//                    "email VARCHAR(50) NOT NULL UNIQUE," +
+//                    "enrollment_date DATE);");
             //DML to insert values into the students table
-            statement.executeUpdate("INSERT INTO students (first_name, last_name, email, enrollment_date) VALUES" +
-            "('John', 'Doe', 'john.doe@example.com', '2023-09-01')," +
-            "('Jane', 'Smith', 'jane.smith@example.com', '2023-09-01')," +
-            "('Jim', 'Beam', 'jim.beam@example.com', '2023-09-02');");
+//            statement.executeUpdate("INSERT INTO students (first_name, last_name, email, enrollment_date) VALUES" +
+//            "('John', 'Doe', 'john.doe@example.com', '2023-09-01')," +
+//            "('Jane', 'Smith', 'jane.smith@example.com', '2023-09-01')," +
+//            "('Jim', 'Beam', 'jim.beam@example.com', '2023-09-02');");
         }
         catch (Exception e){
             System.out.println("ERROR");
